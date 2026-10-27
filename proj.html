@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QUIET BARANGAY - Anonymous Loud Muffler Reporting System</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind Configuration -->
+  <script src="js/tailwind.config.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- QRCode.js library for QR Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- HTML5-QRCode library for Camera Scanning -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans flex flex-col min-h-screen antialiased">
+
+  <!-- ================= HEADER / NAVBAR ================= -->
+  <header class="bg-brand text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo & Title -->
+      <a href="#" onclick="showView('home-view')" class="flex items-center gap-3 group">
+        <div class="bg-white/10 p-2 rounded-xl group-hover:bg-white/20 transition-colors">
+          <i data-lucide="shield" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <div class="font-black text-lg tracking-wider leading-none uppercase">QUIET BARANGAY</div>
+          <div class="text-[11px] text-emerald-200/80 font-light mt-0.5">Anonymous Loud Muffler Reporting System</div>
+        </div>
+      </a>
+
+      <!-- Navigation Items -->
+      <nav class="hidden md:flex items-center gap-5 text-xs font-semibold uppercase tracking-wider">
+        <button onclick="showView('home-view')" id="nav-home" class="hover:text-emerald-200 transition-colors py-1 border-b-2 border-white">Home</button>
+        <button onclick="showView('report-view')" id="nav-report" class="hover:text-emerald-200 transition-colors py-1 border-b-2 border-transparent">Report</button>
+        <button onclick="showView('dashboard-view')" id="nav-dashboard" class="hover:text-emerald-200 transition-colors py-1 border-b-2 border-transparent">Report Updates</button>
+        
+        <span class="text-white/30 font-normal">|</span>
+
+        <!-- QR Scanner Quick Button -->
+        <button onclick="openModal('qr-modal')" class="flex items-center gap-1.5 bg-emerald-700/80 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-md transition-all shadow-sm">
+          <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
+          <span>Scan QR</span>
+        </button>
+
+        <button onclick="showView('login-view')" id="nav-login" class="hover:text-emerald-200 transition-colors py-1">Login</button>
+        <button onclick="showView('signup-view')" id="nav-signup" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-md transition-all shadow-sm">Sign Up</button>
+        
+        <button onclick="showView('dashboard-view')" class="flex items-center gap-1.5 bg-black/20 hover:bg-black/30 text-white px-3 py-1.5 rounded-md border border-white/20 transition-all text-[11px]">
+          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+          <span>Officials Login</span>
+        </button>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-white hover:bg-white/10 rounded-lg">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden bg-brand-hover px-4 pt-2 pb-4 border-t border-white/10 space-y-2 text-sm font-medium">
+      <button onclick="showView('home-view'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 hover:bg-white/10 rounded">Home</button>
+      <button onclick="showView('report-view'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 hover:bg-white/10 rounded">Report Incident</button>
+      <button onclick="showView('dashboard-view'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 hover:bg-white/10 rounded">Report Updates</button>
+      <button onclick="openModal('qr-modal'); toggleMobileMenu()" class="flex items-center gap-2 w-full text-left py-2 px-3 bg-emerald-700 rounded text-white font-bold">
+        <i data-lucide="qr-code" class="w-4 h-4"></i>
+        <span>Scan QR Code</span>
+      </button>
+      <button onclick="showView('login-view'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 hover:bg-white/10 rounded">Login</button>
+      <button onclick="showView('signup-view'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 hover:bg-white/10 rounded font-bold text-emerald-300">Sign Up</button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="flex-grow">
+
+    <!-- 1. HOME SCREEN -->
+    <section id="home-view" class="view-panel">
+      <!-- Hero Section -->
+      <div class="relative bg-gradient-to-r from-gray-900 via-brand-hover to-brand text-white overflow-hidden min-h-[460px] flex items-center">
+        <div class="absolute inset-0 z-0 opacity-30 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=1600&auto=format&fit=crop');"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent z-0"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          
+          <div class="md:col-span-8 space-y-6">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none">
+              Less noise,<br>more peace.
+            </h1>
+            <p class="text-base sm:text-lg text-gray-200 leading-relaxed max-w-xl font-light">
+              Help keep our barangay peaceful by reporting motorcycles with loud mufflers. Your identity will remain anonymous.
+            </p>
+            <div class="flex flex-wrap gap-4 pt-2">
+              <button onclick="showView('report-view')" class="flex items-center gap-2.5 bg-brand-accent hover:bg-emerald-600 text-white font-semibold px-6 py-3.5 rounded-lg shadow-lg hover:shadow-emerald-900/30 transition-all transform hover:-translate-y-0.5">
+                <i data-lucide="megaphone" class="w-5 h-5"></i>
+                <span>Report an Incident</span>
+              </button>
+              <button onclick="openModal('qr-modal')" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-lg border border-white/30 backdrop-blur-sm transition-all flex items-center gap-2">
+                <i data-lucide="qr-code" class="w-5 h-5"></i>
+                <span>Scan Website QR</span>
+              </button>
+              <button onclick="showView('dashboard-view')" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-lg border border-white/30 backdrop-blur-sm transition-all flex items-center gap-2">
+                <i data-lucide="list-checks" class="w-5 h-5"></i>
+                <span>View Report Updates</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Website Access QR Code Card -->
+          <div class="md:col-span-4 bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-2xl flex flex-col items-center text-center space-y-4">
+            <div class="bg-white p-3 rounded-2xl shadow-inner border border-gray-100">
+              <!-- Dynamic Website QR Container -->
+              <div id="website-qr-code" class="w-36 h-36 flex items-center justify-center"></div>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm tracking-wide uppercase text-emerald-300">Scan to Access Website</h4>
+              <p class="text-[11px] text-gray-200 mt-1 max-w-xs">Use your phone camera or QR scanner to quickly open this system anytime.</p>
+            </div>
+            <button onclick="downloadQRCode()" class="text-xs bg-white text-brand font-bold px-4 py-2 rounded-xl hover:bg-emerald-50 transition-colors flex items-center gap-1.5 shadow">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>Save Website QR</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Feature Cards -->
+      <div id="features-grid" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
+            <div class="bg-brand/10 p-3.5 rounded-xl text-brand shrink-0">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-gray-900 text-sm mb-1">Anonymous Reporting</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">No name or account required. Submit details safely.</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
+            <div class="bg-brand/10 p-3.5 rounded-xl text-brand shrink-0">
+              <i data-lucide="users" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-gray-900 text-sm mb-1">Barangay Action</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">Reports are reviewed by authorized local officials.</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
+            <div class="bg-brand/10 p-3.5 rounded-xl text-brand shrink-0">
+              <i data-lucide="gavel" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-gray-900 text-sm mb-1">Proper Enforcement</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">Violators may face penalties under local ordinances.</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
+            <div class="bg-brand/10 p-3.5 rounded-xl text-brand shrink-0">
+              <i data-lucide="leaf" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-gray-900 text-sm mb-1">A Quieter Community</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">Fair, safer, and happier barangay environment for all.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. REPORT INCIDENT FORM SCREEN -->
+    <section id="report-view" class="view-panel hidden max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
+        
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-8 pb-6 border-b border-gray-100">
+          <div class="bg-brand/10 text-brand p-3 rounded-xl">
+            <i data-lucide="megaphone" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-gray-900">Report a Loud Muffler</h2>
+            <p class="text-xs text-gray-500 mt-0.5">Fill out the form below. Your identity will remain anonymous.</p>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form id="incident-form" onsubmit="handleFormSubmit(event)" class="grid grid-cols-1 md:grid-cols-12 gap-8">
+          
+          <!-- Left Column -->
+          <div class="md:col-span-6 space-y-5">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Location of Incident <span class="text-red-500">*</span></label>
+              <input type="text" id="form-location" required placeholder="e.g. Near the barangay hall, main road, etc." class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand focus:border-brand text-xs outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Date of Incident <span class="text-red-500">*</span></label>
+                <input type="date" id="form-date" required class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand focus:border-brand text-xs outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Time <span class="text-red-500">*</span></label>
+                <input type="time" id="form-time" required class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand focus:border-brand text-xs outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Vehicle Type <span class="text-red-500">*</span></label>
+              <div class="flex items-center gap-6 pt-1">
+                <label class="flex items-center gap-2 cursor-pointer text-xs font-medium text-gray-700">
+                  <input type="radio" name="vehicle_type" value="Motorcycle" checked class="w-4 h-4 text-brand focus:ring-brand border-gray-300">
+                  <span>Motorcycle</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-xs font-medium text-gray-700">
+                  <input type="radio" name="vehicle_type" value="Other motor vehicle" class="w-4 h-4 text-brand focus:ring-brand border-gray-300">
+                  <span>Other motor vehicle</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Plate Number <span class="text-gray-400 font-normal capitalize">(optional)</span></label>
+              <input type="text" id="form-plate" placeholder="e.g. XYZ 1234" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand text-xs outline-none uppercase">
+              <p class="text-[10px] text-gray-400 mt-1">Only if safely observed. Do not approach or follow the vehicle.</p>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="md:col-span-6 flex flex-col justify-between space-y-5">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Describe What Happened <span class="text-red-500">*</span></label>
+              <textarea id="form-description" rows="5" required placeholder="Include details such as the noise, location, direction of travel, or repeated incidents..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand text-xs outline-none resize-none"></textarea>
+            </div>
+
+            <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl p-4 flex items-start gap-3 text-xs text-emerald-900">
+              <i data-lucide="info" class="w-5 h-5 text-emerald-700 shrink-0 mt-0.5"></i>
+              <div class="space-y-1 text-[11px]">
+                <div class="font-bold text-emerald-950">Note:</div>
+                <ul class="list-disc list-inside space-y-0.5 text-emerald-800">
+                  <li>This is an anonymous report. Do not include your name or personal info.</li>
+                  <li>Please provide truthful information.</li>
+                </ul>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span>Submit Report</span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+    <!-- 3. REPORT SUBMITTED SUCCESS SCREEN -->
+    <section id="success-view" class="view-panel hidden max-w-2xl mx-auto px-4 py-16 text-center">
+      <div class="bg-white p-8 sm:p-12 rounded-3xl shadow-sm border border-gray-200 flex flex-col items-center">
+        
+        <div class="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-emerald-200 mb-6">
+          <i data-lucide="check" class="w-8 h-8 stroke-[3]"></i>
+        </div>
+
+        <h2 class="text-2xl font-black text-gray-900 mb-2">Report Submitted!</h2>
+        <p class="text-gray-500 text-xs max-w-md mb-8">
+          Thank you for helping keep our barangay peaceful.<br>
+          Your report has been received. Use its reference number to find its status in Report Updates.
+        </p>
+
+        <!-- Reference Box -->
+        <div class="w-full bg-emerald-50/70 border border-emerald-100 rounded-2xl p-6 mb-8 text-left space-y-3">
+          <div class="text-center pb-3 border-b border-emerald-200/60">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block mb-1">Reference Number</span>
+            <span id="ref-number-display" class="text-2xl font-black text-emerald-950 tracking-widest font-mono">QB-2026-0012</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-700 pt-1">
+            <div class="flex items-center gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+              <span class="font-semibold text-gray-500">Location:</span>
+              <span id="ref-location-display" class="font-medium text-gray-900">Near the barangay hall</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="calendar" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+              <span class="font-semibold text-gray-500">Date:</span>
+              <span id="ref-date-display" class="font-medium text-gray-900">October 18, 2026</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+              <span class="font-semibold text-gray-500">Time:</span>
+              <span id="ref-time-display" class="font-medium text-gray-900">8:00 PM</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="bike" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+              <span class="font-semibold text-gray-500">Vehicle Type:</span>
+              <span id="ref-vehicle-display" class="font-medium text-gray-900">Motorcycle</span>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="viewSubmittedReport()" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-3 rounded-xl shadow-md transition-all text-xs mb-3">
+          <i data-lucide="list-checks" class="w-4 h-4"></i>
+          <span>View Report Status</span>
+        </button>
+        <button onclick="showView('home-view')" class="inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-white font-semibold px-8 py-3 rounded-xl shadow-md transition-all text-xs">
+          <i data-lucide="home" class="w-4 h-4"></i>
+          <span>Back to Home</span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- 4. BARANGAY OFFICIALS DASHBOARD SCREEN -->
+    <section id="dashboard-view" class="view-panel hidden flex flex-col md:flex-row min-h-[calc(100vh-4rem)] bg-gray-100">
+      
+      <!-- Sidebar -->
+      <aside class="w-full md:w-60 bg-brand text-white shrink-0 p-5 flex flex-col justify-between">
+        <div class="space-y-6">
+          <div class="flex items-center gap-3 pb-4 border-b border-white/10">
+            <i data-lucide="shield" class="w-5 h-5 text-emerald-300"></i>
+            <span class="font-bold text-xs tracking-wider">QUIET BARANGAY</span>
+          </div>
+
+          <nav class="space-y-1">
+            <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 bg-white/10 text-white rounded-xl text-xs font-semibold">
+              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+              <span>Report Updates</span>
+            </a>
+            <a href="#" onclick="alert('Viewing all reports')" class="flex items-center gap-3 px-3.5 py-2.5 text-emerald-100/70 hover:bg-white/5 hover:text-white rounded-xl text-xs font-medium transition-colors">
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              <span>Reports</span>
+            </a>
+            <a href="#" onclick="openModal('qr-modal')" class="flex items-center gap-3 px-3.5 py-2.5 text-emerald-100/70 hover:bg-white/5 hover:text-white rounded-xl text-xs font-medium transition-colors">
+              <i data-lucide="qr-code" class="w-4 h-4"></i>
+              <span>QR Code Scanner</span>
+            </a>
+            <a href="#" onclick="alert('Settings page')" class="flex items-center gap-3 px-3.5 py-2.5 text-emerald-100/70 hover:bg-white/5 hover:text-white rounded-xl text-xs font-medium transition-colors">
+              <i data-lucide="settings" class="w-4 h-4"></i>
+              <span>Settings</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="pt-6 border-t border-white/10">
+          <button onclick="showView('home-view')" class="flex items-center gap-2.5 px-3.5 py-2 text-xs text-emerald-200/80 hover:text-white transition-colors">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Dashboard Panel -->
+      <main class="flex-1 p-6 md:p-8 space-y-6 overflow-x-hidden">
+        
+        <!-- Header Banner -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-gray-900">Community Report Updates</h2>
+            <p class="text-xs text-gray-500 mt-0.5">Review reported incidents and see whether action has been taken. Reports are saved in this browser.</p>
+          </div>
+          <div class="flex items-center gap-2 bg-white border border-gray-200 px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-700 shadow-sm self-start sm:self-auto">
+            <i data-lucide="calendar" class="w-4 h-4 text-brand"></i>
+            <span id="current-date-badge">October 18, 2026</span>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-gray-100 flex items-center justify-center text-gray-700 shrink-0">
+              <i data-lucide="file-text" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total Reports</div>
+              <div id="stat-total" class="text-2xl font-black text-gray-900 mt-0.5">5</div>
+            </div>
+          </div>
+
+          <div class="bg-amber-50/60 p-5 rounded-2xl border border-amber-200/60 shadow-sm flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0">
+              <i data-lucide="clock" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold text-amber-800 uppercase tracking-wider">Pending Review</div>
+              <div id="stat-pending" class="text-2xl font-black text-amber-900 mt-0.5">3</div>
+            </div>
+          </div>
+
+          <div class="bg-sky-50/60 p-5 rounded-2xl border border-sky-200/60 shadow-sm flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-sky-500/20 text-sky-700 flex items-center justify-center shrink-0">
+              <i data-lucide="search" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold text-sky-800 uppercase tracking-wider">Under Verification</div>
+              <div id="stat-verification" class="text-2xl font-black text-sky-900 mt-0.5">1</div>
+            </div>
+          </div>
+
+          <div class="bg-emerald-50/60 p-5 rounded-2xl border border-emerald-200/60 shadow-sm flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-700 flex items-center justify-center shrink-0">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">Action Taken</div>
+              <div id="stat-action" class="text-2xl font-black text-emerald-900 mt-0.5">1</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Recent Reports Table -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h3 class="font-bold text-base text-gray-900">Recent Reports</h3>
+            
+            <div class="flex items-center gap-2">
+              <label class="text-xs text-gray-500 font-medium">Filter:</label>
+              <select id="status-filter" onchange="renderReportsTable()" class="bg-gray-50 border border-gray-300 rounded-lg text-xs font-semibold px-3 py-1.5 outline-none focus:ring-2 focus:ring-brand">
+                <option value="ALL">All Statuses</option>
+                <option value="Pending Review">Pending Review</option>
+                <option value="Under Verification">Under Verification</option>
+                <option value="Action Taken">Action Taken</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-gray-50/80 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100">
+                  <th class="py-3 px-5">Reference No.</th>
+                  <th class="py-3 px-5">Date & Time</th>
+                  <th class="py-3 px-5">Location</th>
+                  <th class="py-3 px-5">Vehicle Type</th>
+                  <th class="py-3 px-5">Status</th>
+                  <th class="py-3 px-5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="reports-table-body" class="divide-y divide-gray-100 text-xs">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </section>
+
+    <!-- 5. LOGIN SCREEN -->
+    <section id="login-view" class="view-panel hidden max-w-4xl mx-auto px-4 py-16">
+      <div class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden grid grid-cols-1 md:grid-cols-2">
+        
+        <!-- Left Banner -->
+        <div class="bg-brand text-white p-8 sm:p-10 flex flex-col justify-between items-center text-center">
+          <div class="my-auto space-y-4">
+            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto">
+              <i data-lucide="shield" class="w-8 h-8 text-emerald-300"></i>
+            </div>
+            <h3 class="text-xl font-bold tracking-wider">QUIET BARANGAY</h3>
+            <p class="text-xs text-emerald-200/80 leading-relaxed max-w-xs">
+              Access your account to manage your reports and track status updates.
+            </p>
+          </div>
+          <div class="text-[10px] text-emerald-200/60">Report loud mufflers. Keep our barangay peaceful.</div>
+        </div>
+
+        <!-- Right Form -->
+        <div class="p-8 sm:p-10 space-y-6">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Login</h2>
+            <p class="text-xs text-gray-500 mt-1">Access your account to manage your reports</p>
+          </div>
+
+          <form onsubmit="handleAuthLogin(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Email Address</label>
+              <div class="relative">
+                <i data-lucide="mail" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3"></i>
+                <input type="email" required placeholder="e.g. user@example.com" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Password</label>
+              <div class="relative">
+                <i data-lucide="lock" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3"></i>
+                <input type="password" required placeholder="••••••••" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs">
+              <label class="flex items-center gap-2 cursor-pointer text-gray-600">
+                <input type="checkbox" class="rounded text-brand focus:ring-brand">
+                <span>Remember me</span>
+              </label>
+              <a href="#" onclick="alert('Password reset link sent to your email!')" class="text-brand font-semibold hover:underline">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
+              <i data-lucide="log-in" class="w-4 h-4"></i>
+              <span>Log In</span>
+            </button>
+          </form>
+
+          <p class="text-center text-xs text-gray-500">
+            Don't have an account? <button onclick="showView('signup-view')" class="text-brand font-bold hover:underline">Sign Up</button>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. SIGN UP SCREEN -->
+    <section id="signup-view" class="view-panel hidden max-w-4xl mx-auto px-4 py-12">
+      <div class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden grid grid-cols-1 md:grid-cols-2">
+        
+        <!-- Left Banner -->
+        <div class="bg-brand text-white p-8 sm:p-10 flex flex-col justify-between items-center text-center">
+          <div class="my-auto space-y-4">
+            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto">
+              <i data-lucide="shield" class="w-8 h-8 text-emerald-300"></i>
+            </div>
+            <h3 class="text-xl font-bold tracking-wider">QUIET BARANGAY</h3>
+            <p class="text-xs text-emerald-200/80 leading-relaxed max-w-xs">
+              Create an account to manage your reports, track updates, and get notified.
+            </p>
+            <div class="text-[11px] bg-white/10 px-4 py-2 rounded-xl text-emerald-100">
+              ( Creating an account is optional. You can still submit anonymous reports. )
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Form -->
+        <div class="p-8 sm:p-10 space-y-5">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Create Account</h2>
+            <p class="text-xs text-gray-500 mt-1">Sign up for a free account (optional)</p>
+          </div>
+
+          <form onsubmit="handleAuthSignup(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Full Name</label>
+              <div class="relative">
+                <i data-lucide="user" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3"></i>
+                <input type="text" required placeholder="e.g. Juan Dela Cruz" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Email Address</label>
+              <div class="relative">
+                <i data-lucide="mail" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3"></i>
+                <input type="email" required placeholder="e.g. juan@example.com" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Password</label>
+                <input type="password" required placeholder="Min 8 chars" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Confirm Password</label>
+                <input type="password" required placeholder="Re-enter password" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
+              </div>
+            </div>
+
+            <label class="flex items-start gap-2 cursor-pointer text-xs text-gray-600 pt-1">
+              <input type="checkbox" required class="rounded text-brand focus:ring-brand mt-0.5">
+              <span>I agree to the <a href="#" class="text-brand font-semibold underline">Terms of Service</a> and <a href="#" class="text-brand font-semibold underline">Privacy Policy</a></span>
+            </label>
+
+            <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>Create Account</span>
+            </button>
+          </form>
+
+          <p class="text-center text-xs text-gray-500">
+            Already have an account? <button onclick="showView('login-view')" class="text-brand font-bold hover:underline">Log In</button>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- QR SCANNER CAMERA MODAL -->
+  <div id="qr-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 relative text-center">
+      <button onclick="closeQRModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 rounded-lg">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center justify-center gap-2 text-brand">
+        <i data-lucide="qr-code" class="w-6 h-6"></i>
+        <h3 class="text-lg font-bold text-gray-900">Scan QR Code</h3>
+      </div>
+      <p class="text-xs text-gray-500">Point your camera at a Quiet Barangay QR Code to open the website or access incident reports.</p>
+
+      <!-- Camera Scanner Display Element -->
+      <div id="qr-reader" class="w-full overflow-hidden rounded-2xl border border-gray-200 bg-black min-h-[250px] flex items-center justify-center text-white text-xs"></div>
+
+      <div class="pt-2 flex justify-center gap-3">
+        <button onclick="startQRScanner()" class="bg-brand text-white font-bold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow">
+          <i data-lucide="camera" class="w-4 h-4"></i>
+          <span>Start Camera</span>
+        </button>
+        <button onclick="closeQRModal()" class="bg-gray-100 text-gray-700 font-semibold text-xs px-4 py-2 rounded-xl hover:bg-gray-200">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW/EDIT REPORT DETAILS MODAL -->
+  <div id="details-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 relative">
+      <button onclick="closeModal('details-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 rounded-lg">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="border-b border-gray-100 pb-3">
+        <span id="modal-ref-no" class="text-xs font-bold text-brand uppercase tracking-wider font-mono">QB-2026-0012</span>
+        <h3 class="text-lg font-bold text-gray-900 mt-0.5">Incident Report Details</h3>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div class="grid grid-cols-2 gap-3 bg-gray-50 p-3.5 rounded-2xl border border-gray-100">
+          <div>
+            <span class="text-gray-400 font-semibold block mb-0.5">Date & Time</span>
+            <span id="modal-datetime" class="font-medium text-gray-800">Oct 18, 2026 8:00 PM</span>
+          </div>
+          <div>
+            <span class="text-gray-400 font-semibold block mb-0.5">Vehicle Type</span>
+            <span id="modal-vehicle" class="font-medium text-gray-800">Motorcycle</span>
+          </div>
+          <div>
+            <span class="text-gray-400 font-semibold block mb-0.5">Location</span>
+            <span id="modal-location" class="font-medium text-gray-800">Near barangay hall</span>
+          </div>
+          <div>
+            <span class="text-gray-400 font-semibold block mb-0.5">Plate Number</span>
+            <span id="modal-plate" class="font-medium text-gray-800">XYZ 1234</span>
+          </div>
+        </div>
+
+        <div>
+          <span class="text-gray-400 font-semibold block mb-1">Description</span>
+          <p id="modal-desc" class="bg-gray-50 p-3 rounded-xl border border-gray-100 text-gray-700 leading-relaxed text-[11px]">
+            Loud modified pipe motorcycle speeding past the main hall.
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-2">Update Report Status</label>
+          <div class="flex gap-2">
+            <select id="modal-status-select" class="flex-1 bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-brand outline-none">
+              <option value="Pending Review">Pending Review</option>
+              <option value="Under Verification">Under Verification</option>
+              <option value="Action Taken">Action Taken</option>
+            </select>
+            <button onclick="saveStatusUpdate()" class="bg-brand hover:bg-brand-hover text-white font-semibold px-4 py-2 rounded-xl text-xs shadow transition-all">
+              Save Status
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script src="js/app.js"></script>
+</body>
+</html>
