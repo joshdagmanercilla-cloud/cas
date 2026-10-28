@@ -467,8 +467,8 @@
 
             <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div class="p-5 border-b border-gray-100">
-                <h4 class="font-bold text-sm text-gray-900">Reports by Plate Number</h4>
-                <p class="text-[11px] text-gray-500 mt-1">Repeat reports for each identifiable plate, across all years.</p>
+                <h4 class="font-bold text-sm text-gray-900">All Reported Plates</h4>
+                <p class="text-[11px] text-gray-500 mt-1">Every identifiable plate and its report count. Select a plate to view all matching reports.</p>
               </div>
               <div class="overflow-x-auto">
                 <table class="w-full text-left">
@@ -485,10 +485,13 @@
           </div>
         </section>
 
-        <!-- Recent Reports Table -->
+        <!-- All Reports Table -->
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
           <div class="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h3 class="font-bold text-base text-gray-900">Recent Reports</h3>
+            <div>
+              <h3 class="font-bold text-base text-gray-900">All Reports</h3>
+              <p class="text-[11px] text-gray-500 mt-1">Each report includes its plate number and total reports for that plate.</p>
+            </div>
             
             <div class="flex items-center gap-2">
               <label class="text-xs text-gray-500 font-medium">Filter:</label>
@@ -509,6 +512,7 @@
                   <th class="py-3 px-5">Date & Time</th>
                   <th class="py-3 px-5">Location</th>
                   <th class="py-3 px-5">Vehicle Type</th>
+                  <th class="py-3 px-5">Plate Number / Count</th>
                   <th class="py-3 px-5">Status</th>
                   <th class="py-3 px-5 text-right">Action</th>
                 </tr>
