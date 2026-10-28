@@ -187,10 +187,23 @@ app.get('/api/reports', requireOfficial, (request, response) => {
   response.json(rows.map(reportFromRow));
 });
 
+app.get('/api/public/repeated-plates', (request, response) => {
+  const rows = database.prepare(`
+    SELECT
+      MIN(UPPER(TRIM(plate))) AS plate,
+      COUNT(*) AS reportCount
+    FROM reports
+    WHERE UPPER(REPLACE(REPLACE(TRIM(plate), ' ', ''), '-', '')) NOT IN ('', 'NA', 'N/A')
+    GROUP BY UPPER(REPLACE(REPLACE(TRIM(plate), ' ', ''), '-', ''))
+    HAVING COUNT(*) > 1
+    ORDER BY reportCount DESC, plate ASC
+  `).all();
+  response.json(rows);
+});
+
 app.post('/api/reports', requireOfficial, limitReports, (request, response) => {
   const report = validateReport(request.body || {});
   if (report.error) return response.status(400).json({ error: report.error });
-
   let id;
   do {
     id = `QB-${report.date.slice(0, 4)}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
