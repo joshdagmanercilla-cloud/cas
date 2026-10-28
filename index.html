@@ -49,8 +49,7 @@
 
         <button onclick="showView('login-view')" id="nav-login" class="hover:text-emerald-200 transition-colors py-1">Login</button>
         <button onclick="showView('signup-view')" id="nav-signup" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-md transition-all shadow-sm">Sign Up</button>
-        
-        <button onclick="showView('dashboard-view')" class="flex items-center gap-1.5 bg-black/20 hover:bg-black/30 text-white px-3 py-1.5 rounded-md border border-white/20 transition-all text-[11px]">
+        <button onclick="showView('login-view')" id="nav-official-login" class="flex items-center gap-1.5 bg-black/20 hover:bg-black/30 text-white px-3 py-1.5 rounded-md border border-white/20 transition-all text-[11px]">
           <i data-lucide="lock" class="w-3.5 h-3.5"></i>
           <span>Officials Login</span>
         </button>
@@ -350,7 +349,7 @@
         </div>
 
         <div class="pt-6 border-t border-white/10">
-          <button onclick="showView('home-view')" class="flex items-center gap-2.5 px-3.5 py-2 text-xs text-emerald-200/80 hover:text-white transition-colors">
+          <button onclick="logoutOfficial()" class="flex items-center gap-2.5 px-3.5 py-2 text-xs text-emerald-200/80 hover:text-white transition-colors">
             <i data-lucide="log-out" class="w-4 h-4"></i>
             <span>Logout</span>
           </button>
@@ -364,11 +363,11 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 class="text-xl font-bold text-gray-900">Community Report Updates</h2>
-            <p class="text-xs text-gray-500 mt-0.5">Review reported incidents and see whether action has been taken. Reports are saved in this browser.</p>
+            <p class="text-xs text-gray-500 mt-0.5">Securely review and update reports stored in the barangay database.</p>
           </div>
           <div class="flex items-center gap-2 bg-white border border-gray-200 px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-700 shadow-sm self-start sm:self-auto">
             <i data-lucide="calendar" class="w-4 h-4 text-brand"></i>
-            <span id="current-date-badge">October 18, 2026</span>
+            <span id="current-date-badge"></span>
           </div>
         </div>
 
@@ -381,7 +380,7 @@
             </div>
             <div>
               <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total Reports</div>
-              <div id="stat-total" class="text-2xl font-black text-gray-900 mt-0.5">5</div>
+              <div id="stat-total" class="text-2xl font-black text-gray-900 mt-0.5">0</div>
             </div>
           </div>
 
@@ -391,7 +390,7 @@
             </div>
             <div>
               <div class="text-[10px] font-bold text-amber-800 uppercase tracking-wider">Pending Review</div>
-              <div id="stat-pending" class="text-2xl font-black text-amber-900 mt-0.5">3</div>
+              <div id="stat-pending" class="text-2xl font-black text-amber-900 mt-0.5">0</div>
             </div>
           </div>
 
@@ -401,7 +400,7 @@
             </div>
             <div>
               <div class="text-[10px] font-bold text-sky-800 uppercase tracking-wider">Under Verification</div>
-              <div id="stat-verification" class="text-2xl font-black text-sky-900 mt-0.5">1</div>
+              <div id="stat-verification" class="text-2xl font-black text-sky-900 mt-0.5">0</div>
             </div>
           </div>
 
@@ -411,11 +410,80 @@
             </div>
             <div>
               <div class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">Action Taken</div>
-              <div id="stat-action" class="text-2xl font-black text-emerald-900 mt-0.5">1</div>
+              <div id="stat-action" class="text-2xl font-black text-emerald-900 mt-0.5">0</div>
             </div>
           </div>
 
         </div>
+
+        <!-- Annual and Plate Report Analytics -->
+        <section class="space-y-4" aria-labelledby="analytics-heading">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <h3 id="analytics-heading" class="font-bold text-base text-gray-900">Violation Report Analytics</h3>
+              <p class="text-xs text-gray-500 mt-1">Counts are based on submitted reports; reports are not confirmed violations.</p>
+            </div>
+            <label for="analytics-year" class="text-xs font-semibold text-gray-600">
+              Annual report
+              <select id="analytics-year" onchange="renderReportAnalytics()" class="ml-2 bg-white border border-gray-300 rounded-lg text-xs font-semibold px-3 py-2 outline-none focus:ring-2 focus:ring-brand"></select>
+            </label>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
+              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Reports this year</div>
+              <div id="analytics-year-total" class="text-2xl font-black text-gray-900 mt-1">0</div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
+              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Busiest month</div>
+              <div id="analytics-busiest-month" class="text-lg font-black text-gray-900 mt-1">No reports</div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
+              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Monthly average</div>
+              <div id="analytics-monthly-average" class="text-2xl font-black text-gray-900 mt-1">0</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              <div class="p-5 border-b border-gray-100">
+                <h4 class="font-bold text-sm text-gray-900">Monthly Report</h4>
+                <p class="text-[11px] text-gray-500 mt-1">Percentage is the change in report count from the previous month.</p>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead>
+                    <tr class="bg-gray-50/80 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100">
+                      <th class="py-3 px-5">Month</th>
+                      <th class="py-3 px-5">Reports</th>
+                      <th class="py-3 px-5 text-right">Change</th>
+                    </tr>
+                  </thead>
+                  <tbody id="monthly-report-body"></tbody>
+                </table>
+              </div>
+              <p class="px-5 py-3 text-[10px] text-gray-400 border-t border-gray-100">This is not the percentage of all vehicles violating; total traffic counts are not collected.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              <div class="p-5 border-b border-gray-100">
+                <h4 class="font-bold text-sm text-gray-900">Reports by Plate Number</h4>
+                <p class="text-[11px] text-gray-500 mt-1">Repeat reports for each identifiable plate, across all years.</p>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead>
+                    <tr class="bg-gray-50/80 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100">
+                      <th class="py-3 px-5">Plate Number / History</th>
+                      <th class="py-3 px-5 text-right">Reports</th>
+                    </tr>
+                  </thead>
+                  <tbody id="plate-report-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <!-- Recent Reports Table -->
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
@@ -477,7 +545,7 @@
         <div class="p-8 sm:p-10 space-y-6">
           <div>
             <h2 class="text-2xl font-bold text-gray-900">Login</h2>
-            <p class="text-xs text-gray-500 mt-1">Access your account to manage your reports</p>
+            <p class="text-xs text-gray-500 mt-1">Access your account to manage reports and track status updates.</p>
           </div>
 
           <form onsubmit="handleAuthLogin(event)" class="space-y-4">
@@ -485,7 +553,7 @@
               <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Email Address</label>
               <div class="relative">
                 <i data-lucide="mail" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3"></i>
-                <input type="email" required placeholder="e.g. user@example.com" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
+                <input type="email" name="email" autocomplete="username" required placeholder="e.g. official@example.com" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
               </div>
             </div>
 
@@ -493,7 +561,7 @@
               <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Password</label>
               <div class="relative">
                 <i data-lucide="lock" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3"></i>
-                <input type="password" required placeholder="••••••••" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
+                <input type="password" name="password" autocomplete="current-password" required placeholder="••••••••" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
               </div>
             </div>
 
@@ -502,7 +570,10 @@
                 <input type="checkbox" class="rounded text-brand focus:ring-brand">
                 <span>Remember me</span>
               </label>
-              <a href="#" onclick="alert('Password reset link sent to your email!')" class="text-brand font-semibold hover:underline">Forgot password?</a>
+              <a href="#" onclick="alert('Please contact your system administrator to reset your official password.'); return false;" class="text-brand font-semibold hover:underline">Forgot password?</a>
+            </div>
+
+            <div id="login-error" class="hidden rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700" role="alert">
             </div>
 
             <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
@@ -522,8 +593,6 @@
     <!-- 6. SIGN UP SCREEN -->
     <section id="signup-view" class="view-panel hidden max-w-4xl mx-auto px-4 py-12">
       <div class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden grid grid-cols-1 md:grid-cols-2">
-        
-        <!-- Left Banner -->
         <div class="bg-brand text-white p-8 sm:p-10 flex flex-col justify-between items-center text-center">
           <div class="my-auto space-y-4">
             <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto">
@@ -531,65 +600,29 @@
             </div>
             <h3 class="text-xl font-bold tracking-wider">QUIET BARANGAY</h3>
             <p class="text-xs text-emerald-200/80 leading-relaxed max-w-xs">
-              Create an account to manage your reports, track updates, and get notified.
+              Anonymous reporting is available to everyone. No account is needed to submit a report.
             </p>
             <div class="text-[11px] bg-white/10 px-4 py-2 rounded-xl text-emerald-100">
-              ( Creating an account is optional. You can still submit anonymous reports. )
+              Official accounts are managed by the system administrator.
             </div>
           </div>
         </div>
 
-        <!-- Right Form -->
-        <div class="p-8 sm:p-10 space-y-5">
+        <div class="p-8 sm:p-10 space-y-5 flex flex-col justify-center">
           <div>
             <h2 class="text-2xl font-bold text-gray-900">Create Account</h2>
-            <p class="text-xs text-gray-500 mt-1">Sign up for a free account (optional)</p>
+            <p class="text-xs text-gray-500 mt-1">Official accounts are provisioned by your system administrator.</p>
           </div>
-
-          <form onsubmit="handleAuthSignup(event)" class="space-y-4">
-            <div>
-              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Full Name</label>
-              <div class="relative">
-                <i data-lucide="user" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3"></i>
-                <input type="text" required placeholder="e.g. Juan Dela Cruz" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Email Address</label>
-              <div class="relative">
-                <i data-lucide="mail" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3"></i>
-                <input type="email" required placeholder="e.g. juan@example.com" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Password</label>
-                <input type="password" required placeholder="Min 8 chars" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Confirm Password</label>
-                <input type="password" required placeholder="Re-enter password" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:ring-2 focus:ring-brand">
-              </div>
-            </div>
-
-            <label class="flex items-start gap-2 cursor-pointer text-xs text-gray-600 pt-1">
-              <input type="checkbox" required class="rounded text-brand focus:ring-brand mt-0.5">
-              <span>I agree to the <a href="#" class="text-brand font-semibold underline">Terms of Service</a> and <a href="#" class="text-brand font-semibold underline">Privacy Policy</a></span>
-            </label>
-
-            <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
-              <i data-lucide="user-plus" class="w-4 h-4"></i>
-              <span>Create Account</span>
-            </button>
-          </form>
-
+          <p class="text-xs text-gray-600 leading-relaxed">
+            To access report updates and analytics as a barangay official, contact your system administrator to request an account.
+          </p>
+          <button onclick="showView('report-view')" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs">
+            Submit an Anonymous Report
+          </button>
           <p class="text-center text-xs text-gray-500">
             Already have an account? <button onclick="showView('login-view')" class="text-brand font-bold hover:underline">Log In</button>
           </p>
         </div>
-
       </div>
     </section>
 
@@ -655,7 +688,15 @@
             <span class="text-gray-400 font-semibold block mb-0.5">Plate Number</span>
             <span id="modal-plate" class="font-medium text-gray-800">XYZ 1234</span>
           </div>
+          <div>
+            <span class="text-gray-400 font-semibold block mb-0.5">Reports for this plate</span>
+            <span id="modal-plate-report-count" class="font-bold text-gray-800">0 reports</span>
+          </div>
         </div>
+
+        <button id="modal-plate-history-button" type="button" onclick="openPlateHistoryForActiveReport()" class="w-full border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-bold px-4 py-2.5 rounded-xl text-xs transition-colors">
+          View plate reporting history
+        </button>
 
         <div>
           <span class="text-gray-400 font-semibold block mb-1">Description</span>
@@ -677,6 +718,42 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATE REPORTING HISTORY MODAL -->
+  <div id="plate-history-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[85vh] shadow-2xl flex flex-col overflow-hidden">
+      <div class="p-5 sm:p-6 border-b border-gray-100 flex items-start justify-between gap-4">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Plate reporting history</span>
+          <h3 id="plate-history-number" class="text-xl font-black text-gray-900 font-mono mt-1">Plate number</h3>
+          <p class="text-xs text-gray-500 mt-1">
+            <span id="plate-history-count" class="font-bold text-gray-800">0</span>
+            submitted reports, including the report currently being reviewed. Reports are not confirmed violations.
+          </p>
+        </div>
+        <button type="button" onclick="closeModal('plate-history-modal')" class="text-gray-400 hover:text-gray-700 p-2 rounded-lg" aria-label="Close plate history">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="overflow-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="sticky top-0 bg-gray-50 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+            <tr>
+              <th class="py-3 px-4">Reference</th>
+              <th class="py-3 px-4">Date & Time</th>
+              <th class="py-3 px-4">Location</th>
+              <th class="py-3 px-4">Status</th>
+              <th class="py-3 px-4 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="plate-history-body" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+      <div class="p-4 border-t border-gray-100 text-right">
+        <button type="button" onclick="closeModal('plate-history-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-xl text-xs">Close</button>
       </div>
     </div>
   </div>
