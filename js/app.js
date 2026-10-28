@@ -23,6 +23,16 @@ function setOfficialNavigation() {
     const loginButton = document.getElementById(id);
     if (loginButton) loginButton.classList.toggle('hidden', officialAuthenticated);
   });
+  const reportButton = document.getElementById('nav-report');
+  if (reportButton) {
+    reportButton.classList.toggle('hidden', !officialAuthenticated);
+    reportButton.innerText = 'Manual Entry';
+  }
+  const mobileReportButton = document.getElementById('mobile-nav-report');
+  if (mobileReportButton) {
+    mobileReportButton.classList.toggle('hidden', !officialAuthenticated);
+    mobileReportButton.innerText = 'Manual Report Entry';
+  }
 }
 
 // Load initial icons & setup on DOM Ready
@@ -127,6 +137,11 @@ function setDefaultDate() {
 
 // View Navigation Logic
 function showView(viewId) {
+  if (viewId === 'report-view' && !officialAuthenticated) {
+    alert('Please log in with an official account to enter reports.');
+    viewId = 'login-view';
+  }
+
   if (viewId === 'dashboard-view' && !officialAuthenticated) {
     alert('Please log in with an official account to view reports.');
     viewId = 'login-view';
@@ -158,6 +173,11 @@ function toggleMobileMenu() {
 // Submit New Incident Report Form
 async function handleFormSubmit(e) {
   e.preventDefault();
+  if (!officialAuthenticated) {
+    alert('Please log in with an official account to enter reports.');
+    showView('login-view');
+    return;
+  }
 
   const location = document.getElementById('form-location').value.trim();
   const rawDate = document.getElementById('form-date').value;
