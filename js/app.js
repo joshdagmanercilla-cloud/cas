@@ -208,7 +208,7 @@ function renderReportsTable() {
   if (filteredReports.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="6" class="text-center py-6 text-gray-400 font-medium text-xs">No reports found for this status.</td>
+        <td colspan="7" class="text-center py-6 text-gray-400 font-medium text-xs">No reports found for this status.</td>
       </tr>
     `;
     return;
@@ -223,11 +223,25 @@ function renderReportsTable() {
     if (report.status === 'Under Verification') badgeClass = 'bg-sky-100 text-sky-800 border-sky-200';
     if (report.status === 'Action Taken') badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
 
+    const plateKey = normalizePlateNumber(report.plate);
+    const plateCount = plateKey ? getPlateReportHistory(plateKey).length : 0;
+    const plateCell = plateKey
+      ? `
+        <td class="py-3.5 px-5">
+          <button type="button" data-plate-history="${escapeHtml(plateKey)}" class="text-left font-mono font-bold text-brand hover:underline">${escapeHtml(report.plate)}</button>
+          <span class="block mt-1 text-[10px] ${plateCount > 1 ? 'font-bold text-amber-700' : 'text-gray-400'}">
+            ${plateCount} ${plateCount === 1 ? 'report' : 'reports'}${plateCount > 1 ? ' · Repeat' : ''}
+          </span>
+        </td>
+      `
+      : '<td class="py-3.5 px-5 text-gray-400">N/A</td>';
+
     tr.innerHTML = `
       <td class="py-3.5 px-5 font-mono font-bold text-brand">${escapeHtml(report.id)}</td>
       <td class="py-3.5 px-5 font-medium text-gray-700">${escapeHtml(formatReportDate(report))} <span class="text-gray-400 text-[10px]">${escapeHtml(report.time)}</span></td>
       <td class="py-3.5 px-5 text-gray-800 font-medium">${escapeHtml(report.location)}</td>
       <td class="py-3.5 px-5 text-gray-600">${escapeHtml(report.vehicle)}</td>
+      ${plateCell}
       <td class="py-3.5 px-5">
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}">
           ${escapeHtml(report.status)}
@@ -241,6 +255,10 @@ function renderReportsTable() {
     `;
 
     tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('[data-plate-history]').forEach(button => {
+    button.addEventListener('click', () => openPlateHistory(button.dataset.plateHistory));
   });
 
   lucide.createIcons();
