@@ -23,7 +23,8 @@ For development, `npm run dev` restarts the server when server files change.
 ## Website behavior
 
 - Only logged-in officials can enter reports; public report submission is disabled.
-- Officials can review all reports, plate-number counts and reporting history for each plate, and annual/monthly report summaries. Plate counts represent submitted reports, not confirmed violations.
+- Anyone can see a public summary of plate numbers with multiple submitted reports and their report counts. These reports are not confirmed violations.
+- Officials can review all reports, plate-number counts and reporting history for each plate, and annual/monthly report summaries.
 - Official accounts are created by the administrator; public sign-up is disabled.
 - Reports and account credentials are persisted in SQLite and are shared between visitors using this server.
 
