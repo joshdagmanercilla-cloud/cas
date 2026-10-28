@@ -129,6 +129,29 @@
         </div>
       </div>
 
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10" aria-labelledby="public-plate-reports-heading">
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-gray-100">
+            <h2 id="public-plate-reports-heading" class="font-bold text-base text-gray-900">Plates with Repeat Reports</h2>
+            <p class="text-xs text-gray-500 mt-1">Public summary of plate numbers reported more than once.</p>
+            <p class="text-[11px] text-amber-800 mt-2">These are submitted report counts, not confirmed violations or proof of wrongdoing.</p>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="bg-gray-50/80 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100">
+                  <th class="py-3 px-5">Plate Number</th>
+                  <th class="py-3 px-5 text-right">Submitted Reports</th>
+                </tr>
+              </thead>
+              <tbody id="public-plate-reports-body" class="divide-y divide-gray-100 text-xs">
+                <tr><td colspan="2" class="py-6 px-5 text-center text-gray-400">Loading repeat reports...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <!-- Feature Cards -->
       <div id="features-grid" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -138,7 +161,7 @@
             </div>
             <div>
               <h3 class="font-bold text-gray-900 text-sm mb-1">Anonymous Reporting</h3>
-              <p class="text-xs text-gray-500 leading-relaxed">No name or account required. Submit details safely.</p>
+              <p class="text-xs text-gray-500 leading-relaxed">Reports are entered and managed by authorized barangay officials.</p>
             </div>
           </div>
 
