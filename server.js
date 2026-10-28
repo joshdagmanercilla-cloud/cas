@@ -187,7 +187,7 @@ app.get('/api/reports', requireOfficial, (request, response) => {
   response.json(rows.map(reportFromRow));
 });
 
-app.post('/api/reports', limitReports, (request, response) => {
+app.post('/api/reports', requireOfficial, limitReports, (request, response) => {
   const report = validateReport(request.body || {});
   if (report.error) return response.status(400).json({ error: report.error });
 
