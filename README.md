@@ -23,7 +23,7 @@ For development, `npm run dev` restarts the server when server files change.
 ## Website behavior
 
 - The public can submit anonymous incident reports and check the status of a report using its reference number on the confirmation screen.
-- Officials must log in to view the report list, plate-number counts, and annual/monthly report summaries.
+- Officials must log in to view the report list, plate-number counts and reporting history for each plate, and annual/monthly report summaries. Plate counts represent submitted reports, not confirmed violations.
 - Official accounts are created by the administrator; public sign-up is disabled.
 - Reports and account credentials are persisted in SQLite and are shared between visitors using this server.
 
